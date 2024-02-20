@@ -4,12 +4,12 @@ const url = require('url')
 const fs = require('fs');
 
 const app = express()
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 80
 
 const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 1000 * 1024 * 1024 } // 10 megabytes
+  limits: { fileSize: 1000 * 1024 * 1024 }
 });
 
 app.use(express.static('public'))
@@ -45,7 +45,8 @@ app.post('/data', upload.single('file'), async (req, res) => {
   if (objPost.type === 'image') {
     console.log('message received "imatge"')
     try {
-      const messageText = "what's in this image?";
+      // const messageText = "what's in this image?";
+      const messageText = "Describe esta imagen";
       
       const imageList = [];      
       imageList.push(objPost.image);
