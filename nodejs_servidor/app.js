@@ -14,6 +14,9 @@ const upload = multer({
 
 app.use(express.static('public'))
 app.use(express.json());
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
+
 
 const httpServer = app.listen(port, async () => {
   console.log(`Listening for HTTP queries on: http://localhost:${port}`)
