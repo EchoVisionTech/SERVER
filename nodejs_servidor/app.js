@@ -7,7 +7,10 @@ const app = express()
 const port = process.env.PORT || 3000
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1000 * 1024 * 1024 } // 10 megabytes
+});
 
 app.use(express.static('public'))
 app.use(express.json());
@@ -26,10 +29,11 @@ function shutDown() {
 }
 
 app.post('/data', upload.single('file'), async (req, res) => {
+  console.log('MESSAGE')
   const textPost = req.body;
   const uploadedFile = req.file;
   let objPost = {}
-  console.log(textPost.data);
+  //console.log(textPost.data);
   try {
     objPost = JSON.parse(textPost.data)
   } catch (error) {
@@ -41,24 +45,14 @@ app.post('/data', upload.single('file'), async (req, res) => {
   if (objPost.type === 'image') {
     console.log('message received "imatge"')
     try {
-      if (objPost.prompt == '') {
-        const messageText = "what's in this image?";
-      } else {
-        const messageText = objPost.text;
-      }
-
-      const imageList = [];
-
-      for (image in objPost.image) {
-        const img = fs.readFileSync(objPost.image);
-
-        const imgB64 = Buffer.from(img).toString('base64');
-
-        imageList.push(imgB64);
-      }
-
-      let url = 'http://localhost:11434/api/maria/image';
+      const messageText = "what's in this image?";
+      
+      const imageList = [];      
+      imageList.push(objPost.image);
+      
+      let url = 'http://localhost:11434/api/generate';
       var data = {
+        model: "llava",
         prompt: messageText,
         images: imageList
       };
@@ -78,7 +72,7 @@ app.post('/data', upload.single('file'), async (req, res) => {
       })
       .then(function (datosRespuesta) {
         var lineas = datosRespuesta.split('\n');
-
+        
         var objetosJSON = [];
         for (var i = 0; i < lineas.length; i++) {
           var linea = lineas[i].trim(); 
@@ -86,7 +80,7 @@ app.post('/data', upload.single('file'), async (req, res) => {
             objetosJSON.push(JSON.parse(linea));
           }
         }
-
+        
         res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' })
         var resp = "";
         objetosJSON.forEach(function(objeto) {
@@ -98,9 +92,9 @@ app.post('/data', upload.single('file'), async (req, res) => {
         res.end("")
       })
       .catch(function (error) {
+        res.status(200).send('Error en la solicitud a marIA')
         console.error("Error en la solicitud:", error);
       });
-      
       
     } catch (error) {
       console.log(error);
