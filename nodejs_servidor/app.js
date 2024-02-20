@@ -9,7 +9,7 @@ const port = process.env.PORT || 80
 const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 10000 * 10024 * 10024 }
+  limits: { fileSize: 1000 * 1024 * 1024 }
 });
 
 app.use(express.static('public'))
