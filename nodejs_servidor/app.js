@@ -2,6 +2,7 @@ const express = require('express')
 const multer = require('multer');
 const url = require('url')
 const fs = require('fs');
+const bodyParser = require('body-parser');
 
 const app = express()
 const port = process.env.PORT || 80
