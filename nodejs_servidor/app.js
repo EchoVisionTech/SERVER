@@ -51,7 +51,7 @@ app.post('/data', upload.single('file'), async (req, res) => {
       const imageList = [];      
       imageList.push(objPost.image);
       
-      let url = 'http://localhost:11434/api/generate';
+      let url = 'https://localhost:11434/api/generate';
       var data = {
         model: "llava",
         prompt: messageText,
