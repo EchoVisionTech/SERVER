@@ -132,14 +132,13 @@ function sendPeticioToDBAPI(messageText, image) {
     if (!response.ok) {
         throw new Error('Network response was not ok');
     }
-    return response.text(); // Assuming you expect a text response
+    return response.text();
   })
   .then(function (textResponse) {
     console.log('Text Response:', textResponse);
   })
   .catch(function (error) {
     console.error('Fetch Error:', error);
-    res.status(500).send('Error in fetching response');
   });
 
 }
