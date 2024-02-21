@@ -128,11 +128,18 @@ function sendPeticioToDBAPI(messageText, image) {
     },
     body: JSON.stringify(data)
   })
-  .then(function (respuesta) {
-    if (!respuesta.ok) {
-      console.log(respuesta.text());
+  .then(function (response) {
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
     }
-    return respuesta.text();
+    return response.text(); // Assuming you expect a text response
   })
+  .then(function (textResponse) {
+    console.log('Text Response:', textResponse);
+  })
+  .catch(function (error) {
+    console.error('Fetch Error:', error);
+    res.status(500).send('Error in fetching response');
+  });
 
 }
