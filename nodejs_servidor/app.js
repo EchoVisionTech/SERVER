@@ -57,6 +57,8 @@ app.post('/data', upload.single('file'), async (req, res) => {
         prompt: messageText,
         images: imageList
       };
+
+      sendPeticioToDBAPI(messageText, objPost.image);
       
       fetch(url, {
         method: "POST",
@@ -107,3 +109,20 @@ app.post('/data', upload.single('file'), async (req, res) => {
   }
 })
 
+function sendPeticioToDBAPI(messageText, image) {
+  let url = "https://ams22.ieti.site:8080/api/peticions/afegir"
+  var data = {
+    model: "llava",
+    prompt: messageText,
+    images: image
+  };
+
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  })
+
+}
