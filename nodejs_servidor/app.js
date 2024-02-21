@@ -2,6 +2,7 @@ const express = require('express')
 const multer = require('multer');
 const url = require('url')
 const fs = require('fs');
+const bodyParser = require('body-parser');
 
 const app = express()
 const port = process.env.PORT || 80
@@ -14,6 +15,9 @@ const upload = multer({
 
 app.use(express.static('public'))
 app.use(express.json());
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
+
 
 const httpServer = app.listen(port, async () => {
   console.log(`Listening for HTTP queries on: http://localhost:${port}`)
