@@ -128,5 +128,11 @@ function sendPeticioToDBAPI(messageText, image) {
     },
     body: JSON.stringify(data)
   })
+  .then(function (respuesta) {
+    if (!respuesta.ok) {
+      console.log(respuesta.text());
+    }
+    return respuesta.text();
+  })
 
 }
