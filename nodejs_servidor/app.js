@@ -114,7 +114,7 @@ app.post('/data', upload.single('file'), async (req, res) => {
 })
 
 function sendPeticioToDBAPI(messageText, image) {
-  let url = "https://ams22.ieti.site:8080/api/peticions/afegir"
+  let url = "https://localhost:8080/api/peticions/afegir"
   var data = {
     model: "llava",
     prompt: messageText,
