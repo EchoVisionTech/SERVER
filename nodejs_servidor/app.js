@@ -60,7 +60,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
         images: imageList
       };
 
-      // sendPeticioToDBAPI(messageText, objPost.image);
+      sendPeticioToDBAPI(messageText, imageList);
       
       fetch(url, {
         method: "POST",
@@ -176,12 +176,12 @@ app.post('/api/user/registre', upload.single('file'), async (req, res) => {
 })
 
 // not added
-function sendPeticioToDBAPI(messageText, image) {
+function sendPeticioToDBAPI(messageText, imageList) {
   let url = "http://localhost:8080/api/peticions/afegir"
   var data = {
     model: "llava",
     prompt: messageText,
-    images: image
+    images: imageList
   };
 
   fetch(url, {
