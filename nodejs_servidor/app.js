@@ -176,7 +176,7 @@ app.post('/api/user/registre', upload.single('file'), async (req, res) => {
 })
 
 // not added
-function sendPeticioToDBAPI(messageText, imageList) {
+async function sendPeticioToDBAPI(messageText, imageList) {
   let url = "http://localhost:8080/api/peticions/afegir"
   var data = {
     model: "llava",
