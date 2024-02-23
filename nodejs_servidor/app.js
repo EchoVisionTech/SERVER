@@ -1,7 +1,5 @@
 const express = require('express')
 const multer = require('multer');
-const url = require('url')
-const fs = require('fs');
 const bodyParser = require('body-parser');
 
 const app = express()
@@ -14,9 +12,9 @@ const upload = multer({
 });
 
 app.use(express.static('public'))
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.json());
 app.use(bodyParser.json({ limit: '10mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 
 
 const httpServer = app.listen(port, async () => {
@@ -32,12 +30,12 @@ function shutDown() {
   process.exit(0);
 }
 
-app.post('/data', upload.single('file'), async (req, res) => {
-  console.log('MESSAGE')
+app.post('/api/maria/image', upload.single('file'), async (req, res) => {
+  console.log('image MESSAGE')
   const textPost = req.body;
   const uploadedFile = req.file;
   let objPost = {}
-  //console.log(textPost.data);
+  
   try {
     objPost = JSON.parse(textPost.data)
   } catch (error) {
@@ -113,6 +111,70 @@ app.post('/data', upload.single('file'), async (req, res) => {
   }
 })
 
+
+app.post('/api/user/registre', upload.single('file'), async (req, res) => {
+  console.log('register MESSAGE')
+  const textPost = req.body;
+  const uploadedFile = req.file;
+  let objPost = {}
+  
+  try {
+    objPost = JSON.parse(textPost.data)
+  } catch (error) {
+    res.status(400).send('Sol·licitud incorrecta.')
+    console.log(error)
+    return
+  }
+
+  try {
+    var name = objPost.name
+    var email = objPost.email
+    var phone = objPost.phone
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('{status:"EROR", message:"Error en el JSON"}')
+  }
+
+  try {
+    let url = 'http://localhost:8080/api/usuaris/registrar';
+    var data = {
+      telefon: phone,
+      nickname: name,
+      email: email
+    };
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then(function (respuesta) {
+      if (!respuesta.ok) {
+        res.status(400).send('Error en la solicitud.')
+        throw new Error("Error en la solicitud");
+      }
+      return respuesta.text();
+    })
+    .then(function (datosRespuesta) { 
+      res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' })
+      console.log(datosRespuesta);
+      res.write(datosRespuesta);
+
+    }).catch(function (error) {
+        res.status(200).send('Error en la solicitud a DBAPI')
+        console.error("Error en la solicitud:", error);
+    });
+
+    res.end("")
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Error processing request.');
+  }
+
+})
+
 // not added
 function sendPeticioToDBAPI(messageText, image) {
   let url = "http://localhost:8080/api/peticions/afegir"
@@ -131,12 +193,12 @@ function sendPeticioToDBAPI(messageText, image) {
   })
   .then(function (response) {
     if (!response.ok) {
-        throw new Error('Network response was not ok');
+        console.log('Error')
     }
     return response.text();
   })
   .then(function (textResponse) {
-    console.log('Text Response:', textResponse);
+    console.log('Response:', textResponse);
   })
   .catch(function (error) {
     console.error('Fetch Error:', error);
