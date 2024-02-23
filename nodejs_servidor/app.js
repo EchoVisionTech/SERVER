@@ -81,30 +81,20 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
       })
       .then(function (datosRespuesta) {
         var lineas = datosRespuesta.split('\n');
-        
-        var objetosJSON = [];
-        for (var i = 0; i < lineas.length; i++) {
-          var linea = lineas[i].trim(); 
-          if (linea) {
-            objetosJSON.push(JSON.parse(linea));
-          }
-        }
-        
-        res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' })
         var resp = "";
-        objetosJSON.forEach(function(objeto) {
-          resp = resp + objeto.response;
-          res.write(objeto.response);
+        lineas.forEach(function(linea) {
+          linea = linea.trim(); 
+          if (linea) {
+            resp += linea;
+          }
         });
-        
         console.log('image response');
-        res.end("")
+        res.status(200).send(resp);
       })
       .catch(function (error) {
-        res.status(200).send('Error en la solicitud a marIA')
         console.error("Error en la solicitud:", error);
+        res.status(500).send('Error en la solicitud a marIA');
       });
-      
     } catch (error) {
       console.log(error);
       res.status(500).send('Error processing request.');
@@ -160,22 +150,17 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
     }).then(function (respuesta) {
       if (!respuesta.ok) {
         console.log('ERROR en la solicitud')
-        res.status(400).send('Error en la solicitud.')
+        throw new Error('Error en la solicitud.');
       }
       return respuesta.text();
     })
     .then(function (datosRespuesta) { 
-      res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' })
-      console.log(datosRespuesta);
-      res.write(datosRespuesta);
-
-    }).catch(function (error) {
-        res.status(200).send('Error en la solicitud a DBAPI')
+      res.status(200).send(datosRespuesta); 
+    })
+    .catch(function (error) {
         console.error("Error en la solicitud:", error);
+        res.status(500).send('Error en la solicitud a DBAPI'); 
     });
-
-    res.end("")
-
   } catch (error) {
     console.log(error);
     res.status(500).send('Error processing request.');
@@ -188,7 +173,7 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
 ////////////////////
 
 app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
-  console.log('image MESSAGE')
+  console.log('validation MESSAGE')
   const textPost = req.body;
   const uploadedFile = req.file;
   let objPost = {}
@@ -223,19 +208,17 @@ app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
     body: JSON.stringify(data)
   }).then(function (respuesta) {
     if (!respuesta.ok) {
-      console.log('Error en la solicitud')
-      res.status(400).send('Error en la solicitud.')
+      console.log('ERROR en la solicitud')
+      throw new Error('Error en la solicitud.');
     }
     return respuesta.text();
   })
   .then(function (datosRespuesta) { 
-    res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' })
-    console.log(datosRespuesta);
-    res.write(datosRespuesta);
-
-  }).catch(function (error) {
-      res.status(200).send('Error en la solicitud a DBAPI')
+    res.status(200).send(datosRespuesta); 
+  })
+  .catch(function (error) {
       console.error("Error en la solicitud:", error);
+      res.status(200).send('Error en la solicitud a DBAPI')
   });
 
   res.end("")
