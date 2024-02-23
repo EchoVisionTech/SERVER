@@ -30,6 +30,10 @@ function shutDown() {
   process.exit(0);
 }
 
+////////////////
+///  IMAGEN  ///
+////////////////
+
 app.post('/api/maria/image', upload.single('file'), async (req, res) => {
   console.log('image MESSAGE')
   const textPost = req.body;
@@ -37,7 +41,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
   let objPost = {}
   
   try {
-    objPost = JSON.parse(textPost.data)
+    objPost = JSON.parse(textPost)
   } catch (error) {
     res.status(400).send('Sol·licitud incorrecta.')
     console.log(error)
@@ -112,7 +116,11 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
 })
 
 
-app.post('/api/user/registre', upload.single('file'), async (req, res) => {
+//////////////////
+///  REGISTRO  ///
+//////////////////
+
+app.post('/api/user/register', upload.single('file'), async (req, res) => {
   console.log('register MESSAGE')
   const textPost = req.body;
   const uploadedFile = req.file;
@@ -151,8 +159,8 @@ app.post('/api/user/registre', upload.single('file'), async (req, res) => {
       body: JSON.stringify(data)
     }).then(function (respuesta) {
       if (!respuesta.ok) {
+        console.log('ERROR en la solicitud')
         res.status(400).send('Error en la solicitud.')
-        throw new Error("Error en la solicitud");
       }
       return respuesta.text();
     })
@@ -174,6 +182,70 @@ app.post('/api/user/registre', upload.single('file'), async (req, res) => {
   }
 
 })
+
+////////////////////
+///  VALIDACION  ///
+////////////////////
+
+app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
+  console.log('image MESSAGE')
+  const textPost = req.body;
+  const uploadedFile = req.file;
+  let objPost = {}
+  
+  try {
+    objPost = JSON.parse(textPost)
+  } catch (error) {
+    res.status(400).send('Sol·licitud incorrecta.')
+    console.log(error)
+    return
+  }
+
+  try {
+    var number = objPost.number;
+    var phone = objPost.phone;
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('{status:"EROR", message:"Error en el JSON"}')
+  }
+
+  let url = "http://localhost:8080/api/usuaris/validar"
+  var data = {
+    telefon: phone,
+    codi_validacio: number
+  };
+
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  }).then(function (respuesta) {
+    if (!respuesta.ok) {
+      console.log('Error en la solicitud')
+      res.status(400).send('Error en la solicitud.')
+    }
+    return respuesta.text();
+  })
+  .then(function (datosRespuesta) { 
+    res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' })
+    console.log(datosRespuesta);
+    res.write(datosRespuesta);
+
+  }).catch(function (error) {
+      res.status(200).send('Error en la solicitud a DBAPI')
+      console.error("Error en la solicitud:", error);
+  });
+
+  res.end("")
+
+})
+
+
+///////////////////
+///  FUNCIONES  ///
+///////////////////
 
 async function sendPeticioToDBAPI(messageText, imageList) {
   console.log('sending to DBAPI');
