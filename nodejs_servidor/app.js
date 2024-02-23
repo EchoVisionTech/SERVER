@@ -238,7 +238,7 @@ async function sendPeticioToDBAPI(messageText, imageList) {
   var data = {
     model: "llava",
     prompt: messageText,
-    images: imageList
+    imatges: imageList
   };
 
   fetch(url, {
