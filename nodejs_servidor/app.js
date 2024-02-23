@@ -30,6 +30,7 @@ function shutDown() {
   process.exit(0);
 }
 
+
 ////////////////
 ///  IMAGEN  ///
 ////////////////
@@ -41,7 +42,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
   let objPost = {}
   
   try {
-    objPost = JSON.parse(textPost)
+    objPost = JSON.parse(textPost.data)
   } catch (error) {
     res.status(400).send('Sol·licitud incorrecta.')
     console.log(error)
@@ -158,8 +159,8 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
       res.status(200).send(datosRespuesta); 
     })
     .catch(function (error) {
-        console.error("Error en la solicitud:", error);
-        res.status(500).send('Error en la solicitud a DBAPI'); 
+        console.error(error);
+        res.status(400).send('Error en la solicitud a DBAPI'); 
     });
   } catch (error) {
     console.log(error);
@@ -167,6 +168,7 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
   }
 
 })
+
 
 ////////////////////
 ///  VALIDACION  ///
@@ -217,8 +219,8 @@ app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
     res.status(200).send(datosRespuesta); 
   })
   .catch(function (error) {
-      console.error("Error en la solicitud:", error);
-      res.status(200).send('Error en la solicitud a DBAPI')
+      console.error(error);
+      res.status(400).send('Error en la solicitud a DBAPI')
   });
 
   res.end("")
