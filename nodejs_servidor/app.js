@@ -145,11 +145,17 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
 
   try {
     let url = 'http://localhost:8080/api/usuaris/registrar';
+
+    var validationCode = generateValidationCode()
+
     var data = {
       telefon: phone,
       nickname: name,
-      email: email
+      email: email,
+      codi_validacio: validationCode
     };
+
+    sendSMS(validationCode, objPost.phone);
 
     fetch(url, {
       method: "POST",
@@ -323,4 +329,25 @@ async function sendPeticioToDBAPI(messageText, imageList) {
     console.error('Fetch Error:', error);
   });
 
+}
+
+function generateValidationCode() {
+  let code = '';
+    for (let i = 0; i < 6; i++) {
+      code += Math.floor(Math.random() * 10);
+    }
+    return code;
+}
+
+async function sendSMS(validationCode, telephoneNum) {
+  var apiToken = 'aKcoakJ4ZMC41GzhJIM4gbXj68JO4uxMuuEhsflzdh5vUe5gpzSf2vbbI7GB90bp'
+  var user = 'ams22'
+  var text = 'EchoVisionTech: your validation code is ' + validationCode
+  try {
+    const response = await fetch('http://192.168.1.16:8000/api/sendsms/?api_token=' + apiToken + '&username=' + user + '&text='+ text + '&receiver=' + telephoneNum );
+    const data = await response.text();
+    console.log(data); // Output the response data
+  } catch (error) {
+    console.error('Error executing cURL:', error);
+  }
 }
