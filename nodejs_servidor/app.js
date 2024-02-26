@@ -245,19 +245,11 @@ app.post('/api/user/login', upload.single('file'), async (req, res) => {
   console.log('login MESSAGE')
   const textPost = req.body;
   const uploadedFile = req.file;
-  let objPost = {}
-  
-  try {
-    objPost = JSON.parse(textPost)
-  } catch (error) {
-    res.status(400).send('Sol·licitud incorrecta.')
-    console.log(error)
-    return
-  }
+
 
   try {
-    var email = objPost.user;
-    var password = objPost.password;
+    var email = textPost.user;
+    var password = textPost.password;
   } catch (error) {
     console.log(error);
     res.status(400).send('{status:"EROR", message:"Error en el JSON"}')
@@ -292,6 +284,8 @@ app.post('/api/user/login', upload.single('file'), async (req, res) => {
 
   res.write("user recived")
   res.end("")
+
+  console.log('response sended')
 
 })
 
