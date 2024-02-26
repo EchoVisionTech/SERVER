@@ -82,15 +82,24 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
       })
       .then(function (datosRespuesta) {
         var lineas = datosRespuesta.split('\n');
-        var resp = "";
-        lineas.forEach(function(linea) {
-          linea = linea.trim(); 
+        
+        var objetosJSON = [];
+        for (var i = 0; i < lineas.length; i++) {
+          var linea = lineas[i].trim(); 
           if (linea) {
-            resp += linea;
+            objetosJSON.push(JSON.parse(linea));
           }
+        }
+        
+        res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' })
+        var resp = "";
+        objetosJSON.forEach(function(objeto) {
+          resp = resp + objeto.response;
+          res.write(objeto.response);
         });
+        
         console.log('image response');
-        res.status(200).send(resp);
+        res.end("")
       })
       .catch(function (error) {
         console.error("Error en la solicitud:", error);
