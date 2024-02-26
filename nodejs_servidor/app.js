@@ -237,6 +237,65 @@ app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
 })
 
 
+////////////////
+///  LOG IN  ///
+////////////////
+
+app.post('/api/user/login', upload.single('file'), async (req, res) => {
+  console.log('login MESSAGE')
+  const textPost = req.body;
+  const uploadedFile = req.file;
+  let objPost = {}
+  
+  try {
+    objPost = JSON.parse(textPost)
+  } catch (error) {
+    res.status(400).send('Sol·licitud incorrecta.')
+    console.log(error)
+    return
+  }
+
+  try {
+    var email = objPost.user;
+    var password = objPost.password;
+  } catch (error) {
+    console.log(error);
+    res.status(400).send('{status:"EROR", message:"Error en el JSON"}')
+  }
+
+  // let url = "http://localhost:8080/api/usuaris/validar"
+  // var data = {
+  //   telefon: phone,
+  //   codi_validacio: number
+  // };
+
+  // fetch(url, {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json"
+  //   },
+  //   body: JSON.stringify(data)
+  // }).then(function (respuesta) {
+  //   if (!respuesta.ok) {
+  //     console.log('ERROR en la solicitud')
+  //     throw new Error('Error en la solicitud.');
+  //   }
+  //   return respuesta.text();
+  // })
+  // .then(function (datosRespuesta) { 
+  //   res.status(200).send(datosRespuesta); 
+  // })
+  // .catch(function (error) {
+  //     console.error(error);
+  //     res.status(400).send('Error en la solicitud a DBAPI')
+  // });
+
+  res.write("user recived")
+  res.end("")
+
+})
+
+
 ///////////////////
 ///  FUNCIONES  ///
 ///////////////////
