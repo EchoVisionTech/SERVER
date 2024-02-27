@@ -195,7 +195,7 @@ app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
     telefon: phone,
     codi_validacio: number
   };
-
+  
   fetch(url, {
     method: "POST",
     headers: {
@@ -211,12 +211,15 @@ app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
     return respuesta.text();
   })
   .then(function (datosRespuesta) { 
+    console.log(datosRespuesta);
     res.send(datosRespuesta); 
   })
   .catch(function (error) {
       console.error(error);
       res.send('Error en la solicitud a DBAPI');
   });
+
+  console.log("validation done")
 
 })
 
