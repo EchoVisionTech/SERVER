@@ -288,7 +288,7 @@ app.post('/api/user/login', upload.single('file'), async (req, res) => {
   //     res.status(400).send('Error en la solicitud a DBAPI')
   // });
 
-  res.write("user recived")
+  res.write('{user:"ok"}')
   res.end("")
 
   console.log('response sended')
