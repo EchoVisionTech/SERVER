@@ -343,8 +343,10 @@ async function sendSMS(validationCode, telephoneNum) {
   var apiToken = 'aKcoakJ4ZMC41GzhJIM4gbXj68JO4uxMuuEhsflzdh5vUe5gpzSf2vbbI7GB90bp'
   var user = 'ams22'
   var text = 'EchoVisionTech: your validation code is ' + validationCode
+  var message = 'http://192.168.1.16:8000/api/sendsms/?api_token=' + apiToken + '&username=' + user + '&text='+ text + '&receiver=' + telephoneNum
+  console.log(message)
   try {
-    const response = await fetch('http://192.168.1.16:8000/api/sendsms/?api_token=' + apiToken + '&username=' + user + '&text='+ text + '&receiver=' + telephoneNum );
+    const response = await fetch(message);
     const data = await response.text();
     console.log(data); // Output the response data
   } catch (error) {
