@@ -288,7 +288,8 @@ app.post('/api/user/login', upload.single('file'), async (req, res) => {
   //     res.status(400).send('Error en la solicitud a DBAPI')
   // });
 
-  res.write('{user:"ok"}')
+  // default response
+  res.write('{"status": "OK", "message": "Usuari autenticat correctament", "data": {"api_key": "D23qswfSgR6VM9cuTuN"}}')
   res.end("")
 
   console.log('response sended')
