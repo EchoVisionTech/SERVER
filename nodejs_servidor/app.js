@@ -40,13 +40,21 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
   const textPost = req.body;
   const uploadedFile = req.file;
 
+  try {
+    objPost = JSON.parse(textPost)
+  } catch (error) {
+    res.status(400).send('Sol·licitud incorrecta.')
+    console.log(error)
+    return
+  }
+
   console.log('message received "imatge"')
   try {
-    const userToken = textPost.token;
+    const userToken = objPost.token;
 
-    const messageText = textPost.prompt;
+    const messageText = objPost.prompt;
     const imageList = [];      
-    imageList.push(textPost.image);
+    imageList.push(objPost.image);
     
     let url = 'http://192.168.1.14:11434/api/generate';
     var data = {
@@ -54,6 +62,8 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
       prompt: messageText,
       images: imageList
     };
+
+    var idPeticio;
 
     sendPeticioToDBAPI(messageText, imageList, userToken);
     
@@ -90,6 +100,8 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
       
       console.log('image response');
       res.end("")
+
+      sendResponseToDBAPI(idPeticio, resp);
     })
     .catch(function (error) {
       console.error("Error en la solicitud:", error);
@@ -113,7 +125,7 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
   let objPost = {}
   
   try {
-    objPost = JSON.parse(textPost.data)
+    objPost = JSON.parse(textPost)
   } catch (error) {
     res.status(400).send('Sol·licitud incorrecta.')
     console.log(error)
@@ -312,6 +324,11 @@ async function sendPeticioToDBAPI(messageText, imageList, token) {
   })
   .then(function (textResponse) {
     console.log('Response:', textResponse);
+    if (textResponse.body.status == "OK" ) {
+      return textResponse.body.data.id
+    } else {
+      return 0
+    }
   })
   .catch(function (error) {
     console.error('Fetch Error:', error);
