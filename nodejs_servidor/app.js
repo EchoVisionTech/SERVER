@@ -122,15 +122,6 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
   console.log('register MESSAGE')
   const textPost = req.body;
   const uploadedFile = req.file;
-  // let objPost = {}
-  
-  // try {
-  //   objPost = JSON.parse(textPost)
-  // } catch (error) {
-  //   res.status(400).send('Sol·licitud incorrecta.')
-  //   console.log(error)
-  //   return
-  // }
 
   try {
     var name = textPost.name
@@ -152,8 +143,6 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
       email: email,
       codi_validacio: validationCode
     };
-
-    console.log(data)
 
     fetch(url, {
       method: "POST",
@@ -192,15 +181,6 @@ app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
   console.log('validation MESSAGE')
   const textPost = req.body;
   const uploadedFile = req.file;
-  // let objPost = {}
-  
-  // try {
-  //   objPost = JSON.parse(textPost)
-  // } catch (error) {
-  //   res.status(400).send('Sol·licitud incorrecta.')
-  //   console.log(error)
-  //   return
-  // }
 
   try {
     var number = textPost.number;
