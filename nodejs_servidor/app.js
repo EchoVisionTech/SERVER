@@ -122,20 +122,20 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
   console.log('register MESSAGE')
   const textPost = req.body;
   const uploadedFile = req.file;
-  let objPost = {}
+  // let objPost = {}
   
-  try {
-    objPost = JSON.parse(textPost)
-  } catch (error) {
-    res.status(400).send('Sol·licitud incorrecta.')
-    console.log(error)
-    return
-  }
+  // try {
+  //   objPost = JSON.parse(textPost)
+  // } catch (error) {
+  //   res.status(400).send('Sol·licitud incorrecta.')
+  //   console.log(error)
+  //   return
+  // }
 
   try {
-    var name = objPost.name
-    var email = objPost.email
-    var phone = objPost.phone
+    var name = textPost.name
+    var email = textPost.email
+    var phone = textPost.phone
   } catch (error) {
     console.log(error);
     res.status(400).send('{status:"EROR", message:"Error en el JSON"}')
@@ -191,19 +191,19 @@ app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
   console.log('validation MESSAGE')
   const textPost = req.body;
   const uploadedFile = req.file;
-  let objPost = {}
+  // let objPost = {}
   
-  try {
-    objPost = JSON.parse(textPost)
-  } catch (error) {
-    res.status(400).send('Sol·licitud incorrecta.')
-    console.log(error)
-    return
-  }
+  // try {
+  //   objPost = JSON.parse(textPost)
+  // } catch (error) {
+  //   res.status(400).send('Sol·licitud incorrecta.')
+  //   console.log(error)
+  //   return
+  // }
 
   try {
-    var number = objPost.number;
-    var phone = objPost.phone;
+    var number = textPost.number;
+    var phone = textPost.phone;
   } catch (error) {
     console.log(error);
     res.status(400).send('{status:"EROR", message:"Error en el JSON"}')
