@@ -39,79 +39,65 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
   console.log('image MESSAGE')
   const textPost = req.body;
   const uploadedFile = req.file;
-  let objPost = {}
-  
+
+  console.log('message received "imatge"')
   try {
-    objPost = JSON.parse(textPost.data)
-  } catch (error) {
-    res.status(400).send('Sol·licitud incorrecta.')
-    console.log(error)
-    return
-  }
+    const userToken = textPost.token;
 
-  if (objPost.type === 'image') {
-    console.log('message received "imatge"')
-    try {
-      // const messageText = "what's in this image?";
-      const messageText = "Describe esta imagen";
-      
-      const imageList = [];      
-      imageList.push(objPost.image);
-      
-      let url = 'http://192.168.1.14:11434/api/generate';
-      var data = {
-        model: "llava",
-        prompt: messageText,
-        images: imageList
-      };
+    const messageText = textPost.prompt;
+    const imageList = [];      
+    imageList.push(textPost.image);
+    
+    let url = 'http://192.168.1.14:11434/api/generate';
+    var data = {
+      model: "llava",
+      prompt: messageText,
+      images: imageList
+    };
 
-      sendPeticioToDBAPI(messageText, imageList);
+    sendPeticioToDBAPI(messageText, imageList, userToken);
+    
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then(function (respuesta) {
+      if (!respuesta.ok) {
+        res.status(400).send('Error en la solicitud.')
+        throw new Error("Error en la solicitud");
+      }
+      return respuesta.text();
+    })
+    .then(function (datosRespuesta) {
+      var lineas = datosRespuesta.split('\n');
       
-      fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      }).then(function (respuesta) {
-        if (!respuesta.ok) {
-          res.status(400).send('Error en la solicitud.')
-          throw new Error("Error en la solicitud");
+      var objetosJSON = [];
+      for (var i = 0; i < lineas.length; i++) {
+        var linea = lineas[i].trim(); 
+        if (linea) {
+          objetosJSON.push(JSON.parse(linea));
         }
-        return respuesta.text();
-      })
-      .then(function (datosRespuesta) {
-        var lineas = datosRespuesta.split('\n');
-        
-        var objetosJSON = [];
-        for (var i = 0; i < lineas.length; i++) {
-          var linea = lineas[i].trim(); 
-          if (linea) {
-            objetosJSON.push(JSON.parse(linea));
-          }
-        }
-        
-        res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' })
-        var resp = "";
-        objetosJSON.forEach(function(objeto) {
-          resp = resp + objeto.response;
-          res.write(objeto.response);
-        });
-        
-        console.log('image response');
-        res.end("")
-      })
-      .catch(function (error) {
-        console.error("Error en la solicitud:", error);
-        res.status(500).send('Error en la solicitud a marIA');
+      }
+      
+      res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' })
+      var resp = "";
+      objetosJSON.forEach(function(objeto) {
+        resp = resp + objeto.response;
+        res.write(objeto.response);
       });
-    } catch (error) {
-      console.log(error);
-      res.status(500).send('Error processing request.');
-    }
-  } else {
-    console.log('error, type not exists')
-    res.status(400).send('Sol·licitud incorrecta.')
+      
+      console.log('image response');
+      res.end("")
+    })
+    .catch(function (error) {
+      console.error("Error en la solicitud:", error);
+      res.status(500).send('Error en la solicitud a marIA');
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Error processing request.');
   }
 })
 
@@ -301,7 +287,7 @@ app.post('/api/user/login', upload.single('file'), async (req, res) => {
 ///  FUNCIONES  ///
 ///////////////////
 
-async function sendPeticioToDBAPI(messageText, imageList) {
+async function sendPeticioToDBAPI(messageText, imageList, token) {
   console.log('sending to DBAPI');
   let url = "http://localhost:8080/api/peticions/afegir"
   var data = {
@@ -313,7 +299,8 @@ async function sendPeticioToDBAPI(messageText, imageList) {
   fetch(url, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "Authorization": Bearer + token
     },
     body: JSON.stringify(data)
   })
@@ -345,11 +332,10 @@ async function sendSMS(validationCode, telephoneNum) {
   var user = 'ams22'
   var text = 'EchoVisionTech: your validation code is ' + validationCode
   var message = 'http://192.168.1.16:8000/api/sendsms/?api_token=' + apiToken + '&username=' + user + '&text='+ text + '&receiver=' + telephoneNum
-  console.log(message)
   try {
     const response = await fetch(message);
     const data = await response.text();
-    console.log(data); // Output the response data
+    console.log("SMS: " + data);
   } catch (error) {
     console.error('Error executing cURL:', error);
   }
