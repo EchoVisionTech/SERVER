@@ -155,8 +155,6 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
 
     console.log(data)
 
-    sendSMS(validationCode, textPost.phone);
-
     fetch(url, {
       method: "POST",
       headers: {
@@ -168,6 +166,7 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
         console.log('ERROR en la solicitud')
         throw new Error('Error en la solicitud.');
       }
+      sendSMS(validationCode, textPost.phone);
       return respuesta.text();
     })
     .then(function (datosRespuesta) { 
