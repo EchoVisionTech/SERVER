@@ -222,9 +222,10 @@ app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(data)
-  }).then(function (respuesta) {
+  })
+  .then(function (respuesta) {
     if (!respuesta.ok) {
-      console.log('ERROR en la solicitud')
+      console.log('ERROR en la solicitud');
       throw new Error('Error en la solicitud.');
     }
     return respuesta.text();
@@ -234,10 +235,8 @@ app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
   })
   .catch(function (error) {
       console.error(error);
-      res.send('Error en la solicitud a DBAPI')
+      res.send('Error en la solicitud a DBAPI');
   });
-
-  res.end("")
 
 })
 
