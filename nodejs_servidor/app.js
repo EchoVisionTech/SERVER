@@ -153,7 +153,7 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
       codi_validacio: validationCode
     };
 
-    sendSMS(validationCode, objPost.phone);
+    sendSMS(validationCode, textPost.phone);
 
     fetch(url, {
       method: "POST",
