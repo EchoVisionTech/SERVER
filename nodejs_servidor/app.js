@@ -250,6 +250,7 @@ app.post('/api/user/login', upload.single('file'), async (req, res) => {
       console.log('ERROR en la solicitud')
       throw new Error('Error en la solicitud.');
     }
+    return respuesta.text();
   })
   .then(function (datosRespuesta) { 
     console.log(datosRespuesta);
