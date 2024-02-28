@@ -13,8 +13,8 @@ const upload = multer({
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
-app.use(express.json());
 app.use(bodyParser.json({ limit: '10mb' }));
+app.use(express.json());
 
 
 const httpServer = app.listen(port, async () => {
@@ -233,36 +233,36 @@ app.post('/api/user/login', upload.single('file'), async (req, res) => {
     res.status(400).send('{status:"EROR", message:"Error en el JSON"}')
   }
 
-  // let url = "http://localhost:8080/api/usuaris/validar"
-  // var data = {
-  //   telefon: phone,
-  //   codi_validacio: number
-  // };
+  let url = "http://localhost:8080/api/usuaris/login"
+  var data = {
+    email: email,
+    password: password
+  };
 
-  // fetch(url, {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json"
-  //   },
-  //   body: JSON.stringify(data)
-  // }).then(function (respuesta) {
-  //   if (!respuesta.ok) {
-  //     console.log('ERROR en la solicitud')
-  //     throw new Error('Error en la solicitud.');
-  //   }
-  //   return respuesta.text();
-  // })
-  // .then(function (datosRespuesta) { 
-  //   res.status(200).send(datosRespuesta); 
-  // })
-  // .catch(function (error) {
-  //     console.error(error);
-  //     res.status(400).send('Error en la solicitud a DBAPI')
-  // });
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  }).then(function (respuesta) {
+    if (!respuesta.ok) {
+      console.log('ERROR en la solicitud')
+      throw new Error('Error en la solicitud.');
+    }
+  })
+  .then(function (datosRespuesta) { 
+    console.log(datosRespuesta);
+    res.send(datosRespuesta); 
+  })
+  .catch(function (error) {
+      console.error(error);
+      res.status(400).send('Error en la solicitud a DBAPI')
+  });
 
   // default response
-  res.write('{"status": "OK", "message": "Usuari autenticat correctament", "data": {"api_key": "D23qswfSgR6VM9cuTuN"}}')
-  res.end("")
+  // res.write('{"status": "OK", "message": "Usuari autenticat correctament", "data": {"api_key": "D23qswfSgR6VM9cuTuN"}}')
+  // res.end("")
 
   console.log('response sended')
 
@@ -293,6 +293,7 @@ async function sendPeticioToDBAPI(messageText, imageList, token) {
   .then(function (response) {
     if (!response.ok) {
         console.log('Error')
+        throw new Error('Error en la solicitud.');
     }
     return response.text();
   })
@@ -329,6 +330,7 @@ async function sendResponseToDBAPI(token, idPeticio, resposta) {
   .then(function (response) {
     if (!response.ok) {
       console.log('Error')
+      throw new Error('Error en la solicitud.');
     }
     return response.text();
   })
