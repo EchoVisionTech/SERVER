@@ -239,30 +239,30 @@ app.post('/api/user/login', upload.single('file'), async (req, res) => {
     password: password
   };
 
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  }).then(function (respuesta) {
-    if (!respuesta.ok) {
-      console.log('ERROR en la solicitud')
-      throw new Error('Error en la solicitud.');
-    }
-  })
-  .then(function (datosRespuesta) { 
-    console.log(datosRespuesta);
-    res.send(datosRespuesta); 
-  })
-  .catch(function (error) {
-      console.error(error);
-      res.status(400).send('Error en la solicitud a DBAPI')
-  });
+  // fetch(url, {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json"
+  //   },
+  //   body: JSON.stringify(data)
+  // }).then(function (respuesta) {
+  //   if (!respuesta.ok) {
+  //     console.log('ERROR en la solicitud')
+  //     throw new Error('Error en la solicitud.');
+  //   }
+  // })
+  // .then(function (datosRespuesta) { 
+  //   console.log(datosRespuesta);
+  //   res.send(datosRespuesta); 
+  // })
+  // .catch(function (error) {
+  //     console.error(error);
+  //     res.status(400).send('Error en la solicitud a DBAPI')
+  // });
 
   // default response
-  // res.write('{"status": "OK", "message": "Usuari autenticat correctament", "data": {"api_key": "D23qswfSgR6VM9cuTuN"}}')
-  // res.end("")
+  res.write('{"status": "OK", "message": "Usuari autenticat correctament", "data": {"api_key": "D23qswfSgR6VM9cuTuN"}}')
+  res.end("")
 
   console.log('response sended')
 
