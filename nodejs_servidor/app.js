@@ -48,7 +48,6 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
     return
   }
 
-  console.log('message received "imatge"')
   try {
     const userToken = objPost.token;
 
@@ -63,9 +62,9 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
       images: imageList
     };
 
-    var idPeticio;
+    var idPeticio = 0;
 
-    sendPeticioToDBAPI(messageText, imageList, userToken);
+    idPeticio = sendPeticioToDBAPI(messageText, imageList, userToken);
     
     fetch(url, {
       method: "POST",
@@ -101,7 +100,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
       console.log('image response');
       res.end("")
 
-      sendResponseToDBAPI(idPeticio, resp);
+      sendResponseToDBAPI(userToken, idPeticio, resp);
     })
     .catch(function (error) {
       console.error("Error en la solicitud:", error);
@@ -295,7 +294,7 @@ async function sendPeticioToDBAPI(messageText, imageList, token) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": Bearer + token
+      "Authorization": 'Bearer ' + token
     },
     body: JSON.stringify(data)
   })
@@ -312,6 +311,37 @@ async function sendPeticioToDBAPI(messageText, imageList, token) {
     } else {
       return 0
     }
+  })
+  .catch(function (error) {
+    console.error('Fetch Error:', error);
+  });
+
+}
+
+async function sendResponseToDBAPI(token, idPeticio, resposta) {
+  console.log('sending to DBAPI');
+  let url = "http://localhost:8080/api/respostes/afegir"
+  var data = {
+    id_peticio: idPeticio,
+    text_generat: resposta
+  };
+
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": 'Bearer ' + token
+    },
+    body: JSON.stringify(data)
+  })
+  .then(function (response) {
+    if (!response.ok) {
+      console.log('Error')
+    }
+    return response.text();
+  })
+  .then(function (textResponse) {
+    console.log('Response:', textResponse);
   })
   .catch(function (error) {
     console.error('Fetch Error:', error);
