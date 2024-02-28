@@ -297,7 +297,7 @@ async function sendPeticioToDBAPI(messageText, imageList, token) {
     }
     return response.json();
   })
-  .then(function (textResponse) {
+  .then(function (jsonResponse) {
     console.log('Response:', jsonResponse);
     if (jsonResponse.status == "OK" ) {
       return jsonResponse.data.id
