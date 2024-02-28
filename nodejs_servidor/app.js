@@ -295,7 +295,7 @@ async function sendPeticioToDBAPI(messageText, imageList, token) {
         console.log('Error')
         throw new Error('Error en la solicitud.');
     }
-    return response.text();
+    return response.json();
   })
   .then(function (textResponse) {
     console.log('Response:', textResponse);
