@@ -92,7 +92,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
       console.log('image response');
       res.end("")
 
-      sendResponseToDBAPI(userToken, idPeticio, resp);
+      // sendResponseToDBAPI(userToken, idPeticio, resp);
     })
     .catch(function (error) {
       console.error("Error en la solicitud:", error);
