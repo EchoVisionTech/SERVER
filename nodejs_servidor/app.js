@@ -41,19 +41,11 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
 
   try {
-    objPost = JSON.parse(textPost)
-  } catch (error) {
-    res.status(400).send('Sol·licitud incorrecta.')
-    console.log(error)
-    return
-  }
+    const userToken = textPost.token;
 
-  try {
-    const userToken = objPost.token;
-
-    const messageText = objPost.prompt;
+    const messageText = textPost.prompt;
     const imageList = [];      
-    imageList.push(objPost.image);
+    imageList.push(textPost.image);
     
     let url = 'http://192.168.1.14:11434/api/generate';
     var data = {
