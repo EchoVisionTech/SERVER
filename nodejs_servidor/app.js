@@ -302,10 +302,9 @@ async function sendPeticioToDBAPI(messageText, imageList, token) {
     return response.json();
   })
   .then(function (jsonResponse) {
-    console.log('Response:', jsonResponse);
     if (jsonResponse.status == "OK" ) {
       var id = jsonResponse.data.id;
-      console.log(id)
+      console.log('>>> idPeticio from DBAPI: ', id)
       return id
     } else {
       return 0
