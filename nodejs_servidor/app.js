@@ -55,7 +55,6 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
     };
 
     sendPeticioToDBAPI(messageText, imageList, userToken).then(function(idPeticio) {
-      console.log('> idPeticio: ', idPeticio)
 
       fetch(url, {
         method: "POST",
@@ -91,8 +90,6 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
         console.log('image response');
         res.end("")
   
-        
-        console.log('>> idPeticio: ', idPeticio)
         sendResponseToDBAPI(userToken, idPeticio, resp);
       })
       .catch(function (error) {
@@ -305,9 +302,10 @@ function sendPeticioToDBAPI(messageText, imageList, token) {
   .then(function (jsonResponse) {
     if (jsonResponse.status == "OK" ) {
       var id = jsonResponse.data.id;
-      console.log('>>> idPeticio from DBAPI: ', id)
+      console.log('>>> DBAPI response ok')
       return id
     } else {
+      console.log('>>> DBAPI response error')
       return 0
     }
   })
@@ -317,7 +315,7 @@ function sendPeticioToDBAPI(messageText, imageList, token) {
 }
 
 async function sendResponseToDBAPI(token, idPeticio, resposta) {
-  console.log('sending to DBAPI');
+  console.log('sending response to DBAPI');
   let url = "http://localhost:8080/api/respostes/afegir"
   var data = {
     id_peticio: idPeticio,
