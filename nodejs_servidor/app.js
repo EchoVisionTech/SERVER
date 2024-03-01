@@ -277,7 +277,7 @@ app.post('/api/user/login', upload.single('file'), async (req, res) => {
 ///////////////////
 
 async function sendPeticioToDBAPI(messageText, imageList, token) {
-  console.log('sending to DBAPI');
+  console.log('sending peticio to DBAPI');
   let url = "http://localhost:8080/api/peticions/afegir"
   var data = {
     model: "llava",
@@ -294,7 +294,7 @@ async function sendPeticioToDBAPI(messageText, imageList, token) {
     body: JSON.stringify(data)
   })
   .then(function (response) {
-    console.log(response.text)
+    console.log(response.json)
     if (!response.ok) {
         console.log('Error')
         throw new Error('Error en la solicitud.');
