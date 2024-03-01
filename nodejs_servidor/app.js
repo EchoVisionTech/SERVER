@@ -85,8 +85,8 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
           resp = resp + objeto.response;
         });
         
-        res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' })
-        res.send(resp);
+        //res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' })
+        res.status(200).send(resp);
         console.log('image response');
         console.log(resp)
         //res.end("")
