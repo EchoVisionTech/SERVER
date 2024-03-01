@@ -56,8 +56,10 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
 
     var idPeticio = 0;
 
-    idPeticio = sendPeticioToDBAPI(messageText, imageList, userToken);
-    console.log('> idPeticio: ', idPeticio)
+    sendPeticioToDBAPI(messageText, imageList, userToken).then(function(idPeticio) {
+      console.log('> idPeticio: ', idPeticio)
+    });
+    
     
     fetch(url, {
       method: "POST",
@@ -286,7 +288,8 @@ function sendPeticioToDBAPI(messageText, imageList, token) {
     imatges: imageList
   };
 
-  fetch(url, {
+  // Devuelve la promesa de fetch
+  return fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -313,7 +316,6 @@ function sendPeticioToDBAPI(messageText, imageList, token) {
   .catch(function (error) {
     console.error('Fetch Error:', error);
   });
-
 }
 
 async function sendResponseToDBAPI(token, idPeticio, resposta) {
