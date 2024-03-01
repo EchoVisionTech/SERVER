@@ -42,22 +42,22 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
 
   try {
     const userToken = textPost.token;
+
     const messageText = textPost.prompt;
-    const imageList = [textPost.image];
-
-    var idPeticio = 0;
+    const imageList = [];      
+    imageList.push(textPost.image);
     
-    idPeticio = await sendPeticioToDBAPI(messageText, imageList, userToken)
-    .then(
-      console.log(idPeticio)
-    );
-
-    const url = 'http://192.168.1.14:11434/api/generate';
-    const data = {
+    let url = 'http://192.168.1.14:11434/api/generate';
+    var data = {
       model: "llava",
       prompt: messageText,
       images: imageList
     };
+
+    var idPeticio = 0;
+
+    idPeticio = await sendPeticioToDBAPI(messageText, imageList, userToken);
+    console.log('> idPeticio: ', idPeticio)
     
     fetch(url, {
       method: "POST",
@@ -94,7 +94,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
       res.end("")
 
       
-      console.log('idPeticio: ', idPeticio)
+      console.log('>> idPeticio: ', idPeticio)
       // sendResponseToDBAPI(userToken, idPeticio, resp);
     })
     .catch(function (error) {
