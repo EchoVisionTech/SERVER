@@ -74,8 +74,9 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
       })
       .then(function (datosRespuesta) {
         writeLog('marIA responed ok')
+        console.log(datosRespuesta)
         var lineas = datosRespuesta.split('\n');
-        
+        console.log(lineas)
         var objetosJSON = [];
         for (var i = 0; i < lineas.length; i++) {
           var linea = lineas[i].trim(); 
@@ -83,6 +84,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
             objetosJSON.push(JSON.parse(linea));
           }
         }
+        console.log(objetosJSON)
         
         var resp = "";
         objetosJSON.forEach(function(objeto) {
