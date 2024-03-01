@@ -86,10 +86,10 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
           resp = resp + objeto.response;
         });
         
-        res.write(resp);
+        res.send(resp);
         console.log('image response');
         console.log(resp)
-        res.end("")
+        //res.end("")
   
         sendResponseToDBAPI(userToken, idPeticio, resp);
       })
