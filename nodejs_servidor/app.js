@@ -89,6 +89,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
           resp = resp + objeto.response;
         });
         
+        console.log(resp)
         res.status(200).send(resp);
         writeLog('image responsed')
   
