@@ -1,6 +1,8 @@
 const express = require('express')
 const multer = require('multer');
 const bodyParser = require('body-parser');
+const fs = require('fs');
+const path = require('path');
 
 const app = express()
 const port = process.env.PORT || 80
@@ -36,6 +38,7 @@ function shutDown() {
 ////////////////
 
 app.post('/api/maria/image', upload.single('file'), async (req, res) => {
+  writeToLog('image MESSAGE')
   console.log('image MESSAGE')
   const textPost = req.body;
   const uploadedFile = req.file;
@@ -85,11 +88,9 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
           resp = resp + objeto.response;
         });
         
-        //res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' })
         res.status(200).send(resp);
         console.log('image response');
         console.log(resp)
-        //res.end("")
   
         sendResponseToDBAPI(userToken, idPeticio, resp);
       })
@@ -367,4 +368,19 @@ async function sendSMS(validationCode, telephoneNum) {
   } catch (error) {
     console.error('Error executing cURL:', error);
   }
+}
+
+function writeToLog(message) {
+  const logFilePath = path.join(__dirname, 'logs.txt'); // Ruta del archivo de logs
+
+  // Agregar la fecha y hora actual al mensaje de log
+  const timestamp = new Date().toISOString();
+  const logMessage = `${timestamp}: ${message}\n`;
+
+  // Escribir en el archivo de logs
+  fs.appendFile(logFilePath, logMessage, (err) => {
+      if (err) {
+          console.error('Error al escribir en el archivo de logs:', err);
+      }
+  });
 }
