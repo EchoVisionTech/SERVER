@@ -86,7 +86,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
         
         var resp = "";
         objetosJSON.forEach(function(objeto) {
-          resp = resp + objeto.response;
+          resp = resp + objeto;
         });
         
         console.log(resp)
