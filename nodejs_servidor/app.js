@@ -395,7 +395,7 @@ async function sendSMS(validationCode, telephoneNum) {
 function writeLog(message) {
   message = '>> ' + message
   console.log(message)
-  const logFilePath = path.join('/var/SERVER', 'log.txt'); // Ruta del archivo de logs
+  const logFilePath = path.join(__dirname, 'logs.txt'); // Ruta del archivo de logs
 
   // Agregar la fecha y hora actual al mensaje de log
   const timestamp = new Date().toISOString();
@@ -412,7 +412,7 @@ function writeLog(message) {
 function writeError(errorMessage) {
   errorMessage = '>>> [ERROR] ' + errorMessage
   console.log(errorMessage)
-  const logFilePath = path.join('/var/SERVER', 'log.txt'); // Ruta del archivo de logs
+  const logFilePath = path.join(__dirname, 'logs.txt'); // Ruta del archivo de logs
 
   // Agregar la fecha y hora actual al mensaje de log
   const timestamp = new Date().toISOString();
