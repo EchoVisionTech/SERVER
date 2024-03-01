@@ -76,7 +76,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
         writeLog('marIA responed ok')
         console.log(datosRespuesta)
         var lineas = datosRespuesta.split('\n');
-        console.log(lineas)
+        // console.log(lineas)
         var objetosJSON = [];
         for (var i = 0; i < lineas.length; i++) {
           var linea = lineas[i].trim(); 
