@@ -56,8 +56,8 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
 
     var idPeticio = 0;
 
-    idPeticio = await sendPeticioToDBAPI(messageText, imageList, userToken);
-    console.log('> idPeticio: ', await idPeticio)
+    idPeticio = sendPeticioToDBAPI(messageText, imageList, userToken);
+    console.log('> idPeticio: ', idPeticio)
     
     fetch(url, {
       method: "POST",
@@ -277,7 +277,7 @@ app.post('/api/user/login', upload.single('file'), async (req, res) => {
 ///  FUNCIONES  ///
 ///////////////////
 
-async function sendPeticioToDBAPI(messageText, imageList, token) {
+function sendPeticioToDBAPI(messageText, imageList, token) {
   console.log('sending peticio to DBAPI');
   let url = "http://localhost:8080/api/peticions/afegir"
   var data = {
