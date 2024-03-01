@@ -45,8 +45,9 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
     const messageText = textPost.prompt;
     const imageList = [textPost.image];
 
+    var idPeticio = 0;
     
-    const idPeticio = await sendPeticioToDBAPI(messageText, imageList, userToken)
+    idPeticio = await sendPeticioToDBAPI(messageText, imageList, userToken)
     .then(
       console.log(idPeticio)
     );
