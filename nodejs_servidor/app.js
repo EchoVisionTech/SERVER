@@ -58,51 +58,51 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
 
     sendPeticioToDBAPI(messageText, imageList, userToken).then(function(idPeticio) {
       console.log('> idPeticio: ', idPeticio)
-    });
-    
-    
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    }).then(function (respuesta) {
-      if (!respuesta.ok) {
-        res.status(400).send('Error en la solicitud.')
-        throw new Error("Error en la solicitud");
-      }
-      return respuesta.text();
-    })
-    .then(function (datosRespuesta) {
-      var lineas = datosRespuesta.split('\n');
-      
-      var objetosJSON = [];
-      for (var i = 0; i < lineas.length; i++) {
-        var linea = lineas[i].trim(); 
-        if (linea) {
-          objetosJSON.push(JSON.parse(linea));
-        }
-      }
-      
-      res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' })
-      var resp = "";
-      objetosJSON.forEach(function(objeto) {
-        resp = resp + objeto.response;
-        res.write(objeto.response);
-      });
-      
-      console.log('image response');
-      res.end("")
 
-      
-      console.log('>> idPeticio: ', idPeticio)
-      // sendResponseToDBAPI(userToken, idPeticio, resp);
-    })
-    .catch(function (error) {
-      console.error("Error en la solicitud:", error);
-      res.status(500).send('Error en la solicitud a marIA');
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      }).then(function (respuesta) {
+        if (!respuesta.ok) {
+          res.status(400).send('Error en la solicitud.')
+          throw new Error("Error en la solicitud");
+        }
+        return respuesta.text();
+      })
+      .then(function (datosRespuesta) {
+        var lineas = datosRespuesta.split('\n');
+        
+        var objetosJSON = [];
+        for (var i = 0; i < lineas.length; i++) {
+          var linea = lineas[i].trim(); 
+          if (linea) {
+            objetosJSON.push(JSON.parse(linea));
+          }
+        }
+        
+        res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' })
+        var resp = "";
+        objetosJSON.forEach(function(objeto) {
+          resp = resp + objeto.response;
+          res.write(objeto.response);
+        });
+        
+        console.log('image response');
+        res.end("")
+  
+        
+        console.log('>> idPeticio: ', idPeticio)
+        // sendResponseToDBAPI(userToken, idPeticio, resp);
+      })
+      .catch(function (error) {
+        console.error("Error en la solicitud:", error);
+        res.status(500).send('Error en la solicitud a marIA');
+      });
     });
+
   } catch (error) {
     console.log(error);
     res.status(500).send('Error processing request.');
