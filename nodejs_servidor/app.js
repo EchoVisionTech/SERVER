@@ -54,8 +54,6 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
       images: imageList
     };
 
-    var idPeticio = 0;
-
     sendPeticioToDBAPI(messageText, imageList, userToken).then(function(idPeticio) {
       console.log('> idPeticio: ', idPeticio)
 
@@ -95,7 +93,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
   
         
         console.log('>> idPeticio: ', idPeticio)
-        // sendResponseToDBAPI(userToken, idPeticio, resp);
+        sendResponseToDBAPI(userToken, idPeticio, resp);
       })
       .catch(function (error) {
         console.error("Error en la solicitud:", error);
