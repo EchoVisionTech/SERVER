@@ -57,7 +57,6 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
     var idPeticio = 0;
 
     idPeticio = sendPeticioToDBAPI(messageText, imageList, userToken);
-    await sleep(2000); 
     console.log('> idPeticio: ', idPeticio)
     
     fetch(url, {
@@ -347,10 +346,6 @@ async function sendResponseToDBAPI(token, idPeticio, resposta) {
     console.error('Fetch Error:', error);
   });
 
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function generateValidationCode() {
