@@ -38,8 +38,7 @@ function shutDown() {
 ////////////////
 
 app.post('/api/maria/image', upload.single('file'), async (req, res) => {
-  writeToLog('image MESSAGE')
-  console.log('image MESSAGE')
+  writeLog('image MESSAGE')
   const textPost = req.body;
   const uploadedFile = req.file;
 
@@ -58,7 +57,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
     };
 
     sendPeticioToDBAPI(messageText, imageList, userToken).then(function(idPeticio) {
-
+      writeLog('sending image to marIA')
       fetch(url, {
         method: "POST",
         headers: {
@@ -67,12 +66,14 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
         body: JSON.stringify(data)
       }).then(function (respuesta) {
         if (!respuesta.ok) {
-          res.status(400).send('Error en la solicitud.')
-          throw new Error("Error en la solicitud");
+          writeError('error en la resposta de marIA')
+          res.status(400).send('Error en la resposta')
+          throw new Error("Error en la resposta");
         }
         return respuesta.text();
       })
       .then(function (datosRespuesta) {
+        writeLog('marIA responed ok')
         var lineas = datosRespuesta.split('\n');
         
         var objetosJSON = [];
@@ -89,19 +90,18 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
         });
         
         res.status(200).send(resp);
-        console.log('image response');
-        console.log(resp)
+        writeLog('image responsed')
   
         sendResponseToDBAPI(userToken, idPeticio, resp);
       })
       .catch(function (error) {
-        console.error("Error en la solicitud:", error);
+        writeError('Error en la solicitud a marIA: ' + error);
         res.status(500).send('Error en la solicitud a marIA');
       });
     });
 
   } catch (error) {
-    console.log(error);
+    writeError('Error:' + error);
     res.status(500).send('Error processing request.');
   }
 })
@@ -112,7 +112,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
 //////////////////
 
 app.post('/api/user/register', upload.single('file'), async (req, res) => {
-  console.log('register MESSAGE')
+  writeLog('register MESSAGE')
   const textPost = req.body;
   const uploadedFile = req.file;
 
@@ -121,15 +121,14 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
     var email = textPost.email
     var phone = textPost.phone
   } catch (error) {
-    console.log(error);
+    writeError('JSON error' + error);
     res.status(400).send('{status:"EROR", message:"Error en el JSON"}')
   }
 
   try {
-    let url = 'http://localhost:8080/api/usuaris/registrar';
-
     var validationCode = generateValidationCode()
-
+    
+    let url = 'http://localhost:8080/api/usuaris/registrar';
     var data = {
       telefon: phone,
       nickname: name,
@@ -137,6 +136,7 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
       codi_validacio: validationCode
     };
 
+    writeLog('sending user register')
     fetch(url, {
       method: "POST",
       headers: {
@@ -145,21 +145,27 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
       body: JSON.stringify(data)
     }).then(function (respuesta) {
       if (!respuesta.ok) {
-        console.log('ERROR en la solicitud')
-        throw new Error('Error en la solicitud.');
+        writeError('error en la resposta')
+        throw new Error('Error en la resposta');
       }
       sendSMS(validationCode, textPost.phone);
-      return respuesta.text();
+      return respuesta.json();
     })
     .then(function (datosRespuesta) { 
-      res.status(200).send(datosRespuesta); 
+      if (datosRespuesta.status == 'OK') {
+        writeLog('user register status ok')
+        res.status(200).send(datosRespuesta); 
+      } else {
+        writeError('user register status not OK')
+        res.status(400).send(datosRespuesta); 
+      }
     })
     .catch(function (error) {
-        console.error(error);
+        writeError('error en la solicitud a DBAPI ' + error)
         res.status(400).send('Error en la solicitud a DBAPI'); 
     });
   } catch (error) {
-    console.log(error);
+    writeError('Error: ' + error)
     res.status(500).send('Error processing request.');
   }
 
@@ -171,7 +177,7 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
 ////////////////////
 
 app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
-  console.log('validation MESSAGE')
+  writeLog('validation MESSAGE')
   const textPost = req.body;
   const uploadedFile = req.file;
 
@@ -179,7 +185,7 @@ app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
     var number = textPost.number;
     var phone = textPost.phone;
   } catch (error) {
-    console.log(error);
+    writeError('JSON error: ' + error)
     res.status(400).send('{status:"EROR", message:"Error en el JSON"}')
   }
 
@@ -189,6 +195,7 @@ app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
     codi_validacio: number
   };
   
+  writeLog('sending validation user')
   fetch(url, {
     method: "POST",
     headers: {
@@ -198,21 +205,24 @@ app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
   })
   .then(function (respuesta) {
     if (!respuesta.ok) {
-      console.log('ERROR en la solicitud');
+      writeError('error en la resposta');
       throw new Error('Error en la solicitud.');
     }
-    return respuesta.text();
+    return respuesta.json();
   })
   .then(function (datosRespuesta) { 
-    console.log(datosRespuesta);
-    res.send(datosRespuesta); 
+    if (datosRespuesta.status == 'OK') {
+      writeLog('user validation status ok')
+      res.status(200).send(datosRespuesta); 
+    } else {
+      writeError('user validation status not OK')
+      res.status(400).send(datosRespuesta); 
+    }
   })
   .catch(function (error) {
-      console.error(error);
-      res.send('Error en la solicitud a DBAPI');
+    writeError('error en la solicitud a DBAPI ' + error)
+    res.send('Error en la solicitud a DBAPI');
   });
-
-  console.log("validation done")
 
 })
 
@@ -222,7 +232,7 @@ app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
 ////////////////
 
 app.post('/api/user/login', upload.single('file'), async (req, res) => {
-  console.log('login MESSAGE')
+  writeLog('login MESSAGE')
   const textPost = req.body;
   const uploadedFile = req.file;
 
@@ -231,7 +241,7 @@ app.post('/api/user/login', upload.single('file'), async (req, res) => {
     var email = textPost.user;
     var password = textPost.password;
   } catch (error) {
-    console.log(error);
+    writeError('JSON error: ' + error)
     res.status(400).send('{status:"EROR", message:"Error en el JSON"}')
   }
 
@@ -241,6 +251,7 @@ app.post('/api/user/login', upload.single('file'), async (req, res) => {
     password: password
   };
 
+  writeLog('sending login user')
   fetch(url, {
     method: "POST",
     headers: {
@@ -249,26 +260,28 @@ app.post('/api/user/login', upload.single('file'), async (req, res) => {
     body: JSON.stringify(data)
   }).then(function (respuesta) {
     if (!respuesta.ok) {
-      console.log('ERROR en la solicitud')
+      writeError('error en la resposta');
       throw new Error('Error en la solicitud.');
     }
-    return respuesta.text();
+    return respuesta.json();
   })
   .then(function (datosRespuesta) { 
-    console.log(datosRespuesta);
-    res.send(datosRespuesta); 
+    if (datosRespuesta.status == 'OK') {
+      writeLog('user login status ok')
+      res.status(200).send(datosRespuesta); 
+    } else {
+      writeError('user login status not OK')
+      res.status(400).send(datosRespuesta); 
+    }
   })
   .catch(function (error) {
-      console.error(error);
+    writeError('error en la solicitud a DBAPI ' + error)
       res.status(400).send('Error en la solicitud a DBAPI')
   });
 
   // default response
   // res.write('{"status": "OK", "message": "Usuari autenticat correctament", "data": {"api_key": "D23qswfSgR6VM9cuTuN"}}')
   // res.end("")
-
-  console.log('response sended')
-
 })
 
 
@@ -277,7 +290,7 @@ app.post('/api/user/login', upload.single('file'), async (req, res) => {
 ///////////////////
 
 function sendPeticioToDBAPI(messageText, imageList, token) {
-  console.log('sending peticio to DBAPI');
+  writeLog('sending peticio to DBAPI')
   let url = "http://localhost:8080/api/peticions/afegir"
   var data = {
     model: "llava",
@@ -296,28 +309,28 @@ function sendPeticioToDBAPI(messageText, imageList, token) {
   })
   .then(function (response) {
     if (!response.ok) {
-        console.log('Error')
-        throw new Error('Error en la solicitud.');
+      writeError('response DBAPI error')
+      throw new Error('Error en la solicitud.');
     }
     return response.json();
   })
   .then(function (jsonResponse) {
     if (jsonResponse.status == "OK" ) {
       var id = jsonResponse.data.id;
-      console.log('>>> DBAPI response ok')
+      writeLog('DBAPI response status ok')
       return id
     } else {
-      console.log('>>> DBAPI response error')
+      writeError('response DBAPI status not OK')
       return 0
     }
   })
   .catch(function (error) {
-    console.error('Fetch Error:', error);
+    writeError('Fetch error: '+ error)
   });
 }
 
 async function sendResponseToDBAPI(token, idPeticio, resposta) {
-  console.log('sending response to DBAPI');
+  writeLog('sending response to DBAPI');
   let url = "http://localhost:8080/api/respostes/afegir"
   var data = {
     id_peticio: idPeticio,
@@ -334,16 +347,23 @@ async function sendResponseToDBAPI(token, idPeticio, resposta) {
   })
   .then(function (response) {
     if (!response.ok) {
-      console.log('Error')
+      writeError('response DBAPI error')
       throw new Error('Error en la solicitud.');
     }
-    return response.text();
+    return response.json();
   })
   .then(function (textResponse) {
-    console.log('Response:', textResponse);
+    if (jsonResponse.status == "OK" ) {
+      var id = jsonResponse.data.id;
+      writeLog('DBAPI response status ok')
+      return id
+    } else {
+      writeError('response DBAPI status not OK')
+      return 0
+    }
   })
   .catch(function (error) {
-    console.error('Fetch Error:', error);
+    writeError('Fetch error: '+ error)
   });
 
 }
@@ -357,6 +377,7 @@ function generateValidationCode() {
 }
 
 async function sendSMS(validationCode, telephoneNum) {
+  writeLog('sending SMS')
   var apiToken = 'aKcoakJ4ZMC41GzhJIM4gbXj68JO4uxMuuEhsflzdh5vUe5gpzSf2vbbI7GB90bp'
   var user = 'ams22'
   var text = 'EchoVisionTech: your validation code is ' + validationCode
@@ -364,13 +385,15 @@ async function sendSMS(validationCode, telephoneNum) {
   try {
     const response = await fetch(message);
     const data = await response.text();
-    console.log("SMS: " + data);
+    writeLog('SMS: ' + data);
   } catch (error) {
-    console.error('Error executing cURL:', error);
+    writeError('Error executing cURL:' + error)
   }
 }
 
-function writeToLog(message) {
+function writeLog(message) {
+  message = '>> ' + message
+  console.log(message)
   const logFilePath = path.join(__dirname, 'logs.txt'); // Ruta del archivo de logs
 
   // Agregar la fecha y hora actual al mensaje de log
@@ -380,7 +403,24 @@ function writeToLog(message) {
   // Escribir en el archivo de logs
   fs.appendFile(logFilePath, logMessage, (err) => {
       if (err) {
-          console.error('Error al escribir en el archivo de logs:', err);
+          console.error('>>>>>> Error al escribir en el archivo de logs:', err);
+      }
+  });
+}
+
+function writeError(errorMessage) {
+  errorMessage = '>>> [ERROR] ' + errorMessage
+  console.log(errorMessage)
+  const logFilePath = path.join(__dirname, 'logs.txt'); // Ruta del archivo de logs
+
+  // Agregar la fecha y hora actual al mensaje de log
+  const timestamp = new Date().toISOString();
+  const logMessage = `${timestamp}: ${errorMessage}\n`;
+
+  // Escribir en el archivo de logs
+  fs.appendFile(logFilePath, logMessage, (err) => {
+      if (err) {
+          console.error('>>>>>> Error al escribir en el archivo de logs:', err);
       }
   });
 }
