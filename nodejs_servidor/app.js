@@ -90,7 +90,25 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
         });
         
         console.log(resp)
-        res.status(200).send(resp);
+        if (idPeticio != 0) {
+          var jsonResp = {
+            status: "ERROR",
+            message: "Algo ha ido mal :(",
+            data: {}
+          }
+          resp = "Something went wrong! :("
+        } else {
+          var jsonResp = {
+            status: "OK",
+            message: "Resposta de la marIA",
+            data: {
+              response: resp
+            }
+          }
+        }
+        
+        console.log('Esto se envia a la app: ', jsonResp)
+        res.status(200).send(jsonResp);
         writeLog('image responsed')
   
         sendResponseToDBAPI(userToken, idPeticio, resp);
