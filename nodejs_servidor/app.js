@@ -40,7 +40,6 @@ function shutDown() {
 app.post('/api/maria/image', upload.single('file'), async (req, res) => {
   writeLog('image MESSAGE')
   const textPost = req.body;
-  const uploadedFile = req.file;
 
   try {
     const userToken = textPost.token;
@@ -133,7 +132,6 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
 app.post('/api/user/register', upload.single('file'), async (req, res) => {
   writeLog('register MESSAGE')
   const textPost = req.body;
-  const uploadedFile = req.file;
 
   try {
     var name = textPost.name
@@ -198,7 +196,6 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
 app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
   writeLog('validation MESSAGE')
   const textPost = req.body;
-  const uploadedFile = req.file;
 
   try {
     var number = textPost.number;
@@ -253,8 +250,6 @@ app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
 app.post('/api/user/login', upload.single('file'), async (req, res) => {
   writeLog('login MESSAGE')
   const textPost = req.body;
-  const uploadedFile = req.file;
-
 
   try {
     var email = textPost.user;
@@ -303,6 +298,42 @@ app.post('/api/user/login', upload.single('file'), async (req, res) => {
   // res.end("")
 })
 
+////////////////////
+///   GET LIST   ///
+////////////////////
+
+app.post('/api/users/admin_get_list', upload.single('file'), async (req, res) => {
+  writeLog('admin_get_list MESSAGE')
+
+  let url = "http://localhost:8080/api/usuaris/admin_obtenir_llista"
+
+  writeLog('asking for the list')
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+  }).then(function (respuesta) {
+    if (!respuesta.ok) {
+      writeError('error en la resposta');
+      throw new Error('Error en la solicitud.');
+    }
+    return respuesta.json();
+  })
+  .then(function (datosRespuesta) { 
+    if (datosRespuesta.status == 'OK') {
+      writeLog('user list status ok')
+      res.status(200).send(datosRespuesta); 
+    } else {
+      writeError('user list status not OK')
+      res.status(400).send(datosRespuesta); 
+    }
+  })
+  .catch(function (error) {
+    writeError('error en la solicitud a DBAPI ' + error)
+      res.status(400).send('Error en la solicitud a DBAPI')
+  });
+})
 
 ///////////////////
 ///  FUNCIONES  ///
