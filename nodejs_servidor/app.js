@@ -90,7 +90,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
         });
         
         console.log(resp)
-        if (idPeticio != 0) {
+        if (!(idPeticio == -1)) {
           var jsonResp = {
             status: "ERROR",
             message: "Algo ha ido mal :(",
@@ -340,7 +340,7 @@ function sendPeticioToDBAPI(messageText, imageList, token) {
       return id
     } else {
       writeError('response DBAPI status not OK')
-      return 0
+      return -1
     }
   })
   .catch(function (error) {
