@@ -90,6 +90,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
         });
         
         console.log(resp)
+        console.log(idPeticio)
         if (!(idPeticio == -1)) {
           var jsonResp = {
             status: "ERROR",
