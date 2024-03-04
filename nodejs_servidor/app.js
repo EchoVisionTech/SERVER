@@ -353,7 +353,7 @@ async function sendResponseToDBAPI(token, idPeticio, resposta) {
     }
     return response.json();
   })
-  .then(function (textResponse) {
+  .then(function (jsonResponse) {
     if (jsonResponse.status == "OK" ) {
       var id = jsonResponse.data.id;
       writeLog('DBAPI response status ok')
