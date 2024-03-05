@@ -247,6 +247,7 @@ app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
 ///  LOG IN  ///
 ////////////////
 
+
 app.post('/api/user/login', upload.single('file'), async (req, res) => {
   writeLog('login MESSAGE')
   const textPost = req.body;
@@ -302,16 +303,20 @@ app.post('/api/user/login', upload.single('file'), async (req, res) => {
 ///   GET LIST   ///
 ////////////////////
 
+
 app.post('/api/users/admin_get_list', upload.single('file'), async (req, res) => {
   writeLog('admin_get_list MESSAGE')
 
   let url = "http://localhost:8080/api/usuaris/admin_obtenir_llista"
 
+  adminToken = req.headers['Authorization']
+
   writeLog('asking for the list')
   fetch(url, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "Authorization": adminToken
     },
   }).then(function (respuesta) {
     if (!respuesta.ok) {
@@ -334,6 +339,68 @@ app.post('/api/users/admin_get_list', upload.single('file'), async (req, res) =>
       res.status(400).send('Error en la solicitud a DBAPI')
   });
 })
+
+
+/////////////////////
+///  CHANGE PLAN  ///
+/////////////////////
+
+app.post('/api/users/admin_change_plan', upload.single('file'), async (req, res) => {
+  writeLog('change plan MESSAGE')
+  const textPost = req.body;
+  adminToken = req.headers['Authorization']
+
+  var plan = textPost.plan
+  
+  let url = "http://localhost:8080/api/usuaris/admin_canvi_pla"
+  var data = {
+    "pla": plan
+  };
+
+  if (textPost.phone_number !== undefined) {
+    data.telefon = textPost.phone_number;
+  }
+  
+  // Verificar y añadir el campo "nombre" si está presente
+  if (textPost.nickname !== undefined) {
+    data.nickname = textPost.nickname;
+  }
+  
+  // Verificar y añadir el campo "mail" si está presente
+  if (textPost.email !== undefined) {
+    data.email = textPost.email;
+  }
+
+  writeLog('sending change plan')
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": adminToken
+    },
+    body: data
+  }).then(function (respuesta) {
+    if (!respuesta.ok) {
+      writeError('error en la resposta');
+      throw new Error('Error en la solicitud.');
+    }
+    return respuesta.json();
+  })
+  .then(function (datosRespuesta) { 
+    if (datosRespuesta.status == 'OK') {
+      writeLog('change plan status ok')
+      res.status(200).send(datosRespuesta); 
+    } else {
+      writeError('change plan status not OK')
+      res.status(400).send(datosRespuesta); 
+    }
+  })
+  .catch(function (error) {
+    writeError('error en la solicitud a DBAPI ' + error)
+      res.status(400).send('Error en la solicitud a DBAPI')
+  });
+})
+
 
 ///////////////////
 ///  FUNCIONES  ///
