@@ -132,6 +132,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
 app.post('/api/user/register', upload.single('file'), async (req, res) => {
   writeLog('register MESSAGE')
   const textPost = req.body;
+  console.log(textPost)
 
   try {
     var name = textPost.name
@@ -152,7 +153,7 @@ app.post('/api/user/register', upload.single('file'), async (req, res) => {
       email: email,
       codi_validacio: validationCode
     };
-
+    console.log(data)
     writeLog('sending user register')
     fetch(url, {
       method: "POST",
