@@ -310,6 +310,7 @@ app.post('/api/users/admin_get_list', upload.single('file'), async (req, res) =>
   let url = "http://localhost:8080/api/usuaris/admin_obtenir_llista"
 
   adminToken = req.headers['Authorization']
+  console.log(adminToken);
 
   writeLog('asking for the list')
   fetch(url, {
