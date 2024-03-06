@@ -228,6 +228,7 @@ app.post('/api/usuaris/validar', upload.single('file'), async (req, res) => {
   })
   .then(function (datosRespuesta) { 
     if (datosRespuesta.status == 'OK') {
+      print(datosRespuesta)
       writeLog('user validation status ok')
       res.status(200).send(datosRespuesta); 
     } else {
