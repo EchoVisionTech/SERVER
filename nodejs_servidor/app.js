@@ -314,7 +314,7 @@ app.post('/api/users/admin_get_list', upload.single('file'), async (req, res) =>
 
   writeLog('asking for the list')
   fetch(url, {
-    method: "GET",
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": adminToken
