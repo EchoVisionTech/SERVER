@@ -319,6 +319,7 @@ app.post('/api/users/admin_get_list', upload.single('file'), async (req, res) =>
       "Content-Type": "application/json",
       "Authorization": adminToken
     },
+    body: {}
   }).then(function (respuesta) {
     if (!respuesta.ok) {
       writeError('error en la resposta');
