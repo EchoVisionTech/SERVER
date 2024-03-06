@@ -375,7 +375,7 @@ app.post('/api/users/admin_change_plan', upload.single('file'), async (req, res)
       "Content-Type": "application/json",
       "Authorization": adminToken
     },
-    body: data
+    body: JSON.stringify(data)
   }).then(function (respuesta) {
     if (!respuesta.ok) {
       writeError('error en la resposta');
