@@ -309,6 +309,9 @@ app.post('/api/users/admin_get_list', upload.single('file'), async (req, res) =>
   writeLog('admin_get_list MESSAGE')
 
   let url = "http://localhost:8080/api/usuaris/admin_obtenir_llista"
+  var data = {
+    a: "a"
+  };
 
   adminToken = req.headers['authorization']
   console.log(adminToken);
@@ -320,7 +323,7 @@ app.post('/api/users/admin_get_list', upload.single('file'), async (req, res) =>
       "Content-Type": "application/json",
       "Authorization": adminToken
     },
-    body: {}
+    body: data
   }).then(function (respuesta) {
     if (!respuesta.ok) {
       writeError('error en la resposta');
