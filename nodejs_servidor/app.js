@@ -365,6 +365,9 @@ app.post('/api/users/admin_change_plan', upload.single('file'), async (req, res)
     "email": textPost.email
   };
 
+  console.log(data)
+  console.log(adminToken)
+
   writeLog('sending change plan')
   fetch(url, {
     method: "POST",
