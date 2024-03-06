@@ -314,7 +314,6 @@ app.post('/api/users/admin_get_list', upload.single('file'), async (req, res) =>
   };
 
   adminToken = req.headers['authorization']
-  console.log(adminToken);
 
   writeLog('asking for the list')
   fetch(url, {
@@ -354,28 +353,17 @@ app.post('/api/users/admin_get_list', upload.single('file'), async (req, res) =>
 app.post('/api/users/admin_change_plan', upload.single('file'), async (req, res) => {
   writeLog('change plan MESSAGE')
   const textPost = req.body;
-  adminToken = req.headers['Authorization']
+  adminToken = req.headers['authorization']
 
   var plan = textPost.plan
   
   let url = "http://localhost:8080/api/usuaris/admin_canvi_pla"
   var data = {
-    "pla": plan
+    "pla": plan,
+    "telefon": textPost.phone_number,
+    "nickname": textPost.nickname,
+    "email": textPost.email
   };
-
-  if (textPost.phone_number !== undefined) {
-    data.telefon = textPost.phone_number;
-  }
-  
-  // Verificar y añadir el campo "nombre" si está presente
-  if (textPost.nickname !== undefined) {
-    data.nickname = textPost.nickname;
-  }
-  
-  // Verificar y añadir el campo "mail" si está presente
-  if (textPost.email !== undefined) {
-    data.email = textPost.email;
-  }
 
   writeLog('sending change plan')
   fetch(url, {
