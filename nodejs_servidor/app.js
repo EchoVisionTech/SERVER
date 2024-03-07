@@ -55,8 +55,8 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
       images: imageList
     };
 
-    consumirQuota(userToken).then(function(respostaQuota) {
-      console.log(respostaQuota)
+    // consumirQuota(userToken).then(function(respostaQuota) {
+      // console.log(respostaQuota)
     sendPeticioToDBAPI(messageText, imageList, userToken).then(function(idPeticio) {
       writeLog('sending image to marIA')
       fetch(url, {
@@ -118,7 +118,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
         writeError('Error en la solicitud a marIA: ' + error);
         res.status(500).send('Error en la solicitud a marIA');
       });
-    })});
+    });
 
   } catch (error) {
     writeError('Error:' + error);
