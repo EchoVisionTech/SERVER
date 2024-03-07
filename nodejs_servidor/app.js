@@ -55,6 +55,8 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
       images: imageList
     };
 
+    consumirQuota(userToken).then(function(respostaQuota) {
+      console.log(respostaQuota)
     sendPeticioToDBAPI(messageText, imageList, userToken).then(function(idPeticio) {
       writeLog('sending image to marIA')
       fetch(url, {
@@ -116,7 +118,7 @@ app.post('/api/maria/image', upload.single('file'), async (req, res) => {
         writeError('Error en la solicitud a marIA: ' + error);
         res.status(500).send('Error en la solicitud a marIA');
       });
-    });
+    })});
 
   } catch (error) {
     writeError('Error:' + error);
@@ -503,6 +505,44 @@ async function sendSMS(validationCode, telephoneNum) {
   } catch (error) {
     writeError('Error executing cURL:' + error)
   }
+}
+
+function consumirQuota(token) {
+  writeLog('sending consumir quota to DBAPI')
+  let url = "http://localhost:8080/api/usuaris/consumir_quota"
+  var data = {
+    unitats: 1
+  };
+
+  // Devuelve la promesa de fetch
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": 'Bearer ' + token
+    },
+    body: JSON.stringify(data)
+  })
+  .then(function (response) {
+    console.log(response.json())
+    if (!response.ok) {
+      writeError('response DBAPI error')
+      throw new Error('Error en la solicitud.');
+    }
+    return response.json();
+  })
+  .then(function (jsonResponse) {
+    if (jsonResponse.status == "OK" ) {
+      writeLog('DBAPI response status ok')
+      return 1
+    } else {
+      writeError('response DBAPI status not OK')
+      return -1
+    }
+  })
+  .catch(function (error) {
+    writeError('Fetch error: '+ error)
+  });
 }
 
 function writeLog(message) {
